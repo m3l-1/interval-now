@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interval Timer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .mode-btn {
+            padding: 12px 24px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .mode-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .settings {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .settings.hidden {
+            display: none;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .advanced-settings {
+            display: none;
+        }
+
+        .advanced-settings.active {
+            display: block;
+        }
+
+        .loop-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+        }
+
+        .loop-item h4 {
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .interval-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: end;
+        }
+
+        .interval-item input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .btn-small:hover {
+            background: #c82333;
+        }
+
+        .btn-add {
+            background: #28a745;
+        }
+
+        .btn-add:hover {
+            background: #218838;
+        }
+
+        .add-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .timer-display {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            color: white;
+        }
+
+        .timer-time {
+            font-size: 6em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer-status {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .timer-rounds {
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-start {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-start:hover {
+            background: #218838;
+        }
+
+        .btn-pause {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-pause:hover {
+            background: #e0a800;
+        }
+
+        .btn-reset {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #c82333;
+        }
+
+        .btn-fullscreen {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-fullscreen:hover {
+            background: #5a6268;
+        }
+
+        /* Fullscreen styles */
+        .fullscreen-mode {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 40px;
+        }
+
+        .fullscreen-mode.active {
+            display: flex;
+        }
+
+        .fullscreen-mode .timer-time {
+            font-size: 15vw;
+            margin-bottom: 40px;
+        }
+
+        .fullscreen-mode .timer-status {
+            font-size: 4vw;
+            margin-bottom: 20px;
+        }
+
+        .fullscreen-mode .timer-rounds {
+            font-size: 3vw;
+            margin-bottom: 60px;
+        }
+
+        .fullscreen-mode .controls {
+            margin-top: 40px;
+        }
+
+        .status-preparation {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
+        }
+
+        .status-work {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%) !important;
+        }
+
+        .status-rest {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%) !important;
+        }
+
+        .status-finished {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%) !important;
+        }
+
+        .pulse {
+            animation: pulse 1s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .timer-time {
+                font-size: 4em;
+            }
+
+            .btn {
+                padding: 12px 25px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⏱️ Interval Timer</h1>
+
+        <div class="mode-selector">
+            <button class="mode-btn active" onclick="switchMode('simple')">Simpel</button>
+            <button class="mode-btn" onclick="switchMode('advanced')">Geavanceerd</button>
+        </div>
+
+        <div class="settings" id="settings">
+            <!-- Simple Mode -->
+            <div class="simple-settings" id="simpleSettings">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Voorbereidingstijd (sec)</label>
+                        <input type="number" id="prepTime" value="10" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label>Aantal rondes</label>
+                        <input type="number" id="rounds" value="10" min="1">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Werktijd (sec)</label>
+                        <input type="number" id="workTime" value="45" min="1">
+                    </div>
+                    <div class="input-group">
+                        <label>Rusttijd (sec)</label>
+                        <input type="number" id="restTime" value="15" min="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Mode -->
+            <div class="advanced-settings" id="advancedSettings">
+                <div class="input-group">
+                    <label>Voorbereidingstijd (sec)</label>
+                    <input type="number" id="advPrepTime" value="10" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Aantal rondes</label>
+                    <input type="number" id="advRounds" value="10" min="1">
+                </div>
+
+                <div id="loopIntervals">
+                    <div class="loop-item">
+                        <h4>Loop Intervallen</h4>
+                        <div class="interval-list" id="intervalList">
+                            <div class="interval-item">
+                                <div>
+                                    <label style="font-size: 12px; display: block; margin-bottom: 4px;">Repetities</label>
+                                    <input type="number" value="1" min="1" class="interval-reps">
+                                </div>
+                                <div>
+                                    <label style="font-size: 12px; display: block; margin-bottom: 4px;">Werktijd (sec)</label>
+                                    <input type="number" value="45" min="1" class="interval-work">
+                                </div>
+                                <div>
+                                    <label style="font-size: 12px; display: block; margin-bottom: 4px;">Rusttijd (sec)</label>
+                                    <input type="number" value="15" min="0" class="interval-rest">
+                                </div>
+                                <button class="btn-small" onclick="removeInterval(this)">×</button>
+                            </div>
+                        </div>
+                        <div class="add-buttons">
+                            <button class="btn-small btn-add" onclick="addInterval()">+ Interval toevoegen</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="timer-display" id="timerDisplay">
+            <div class="timer-time" id="timerTime">00:00</div>
+            <div class="timer-status" id="timerStatus">Klaar om te starten</div>
+            <div class="timer-rounds" id="timerRounds">Ronde 0 / 0</div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-start" id="startBtn" onclick="startTimer()">Start</button>
+            <button class="btn btn-reset" onclick="resetTimer()">Reset</button>
+            <button class="btn btn-fullscreen" onclick="toggleFullscreen()">Fullscreen</button>
+        </div>
+    </div>
+
+    <div class="fullscreen-mode" id="fullscreenMode">
+        <div class="timer-time" id="fsTimerTime">00:00</div>
+        <div class="timer-status" id="fsTimerStatus">Klaar om te starten</div>
+        <div class="timer-rounds" id="fsTimerRounds">Ronde 0 / 0</div>
+        <div class="controls">
+            <button class="btn btn-start" id="fsStartBtn" onclick="startTimer()">Start</button>
+            <button class="btn btn-reset" onclick="resetTimer()">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let currentMode = 'simple';
+        let isRunning = false;
+        let isPaused = false;
+        let timerInterval = null;
+        let timeRemaining = 0;
+        let currentRound = 0;
+        let totalRounds = 0;
+        let currentPhase = 'ready'; // ready, preparation, work, rest, finished
+        let currentIntervalType = 0; // Which interval definition we're in
+        let currentRepInInterval = 0; // Which repetition within that interval
+        let intervals = [];
+        let isFullscreen = false;
+
+        // Audio context
+        let audioContext = null;
+
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playBeep() {
+            initAudio();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        function switchMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (mode === 'simple') {
+                document.getElementById('simpleSettings').style.display = 'block';
+                document.getElementById('advancedSettings').classList.remove('active');
+            } else {
+                document.getElementById('simpleSettings').style.display = 'none';
+                document.getElementById('advancedSettings').classList.add('active');
+            }
+
+            resetTimer();
+        }
+
+        function addInterval() {
+            const intervalList = document.getElementById('intervalList');
+            const newInterval = document.createElement('div');
+            newInterval.className = 'interval-item';
+            newInterval.innerHTML = `
+                <div>
+                    <label style="font-size: 12px; display: block; margin-bottom: 4px;">Repetities</label>
+                    <input type="number" value="1" min="1" class="interval-reps">
+                </div>
+                <div>
+                    <label style="font-size: 12px; display: block; margin-bottom: 4px;">Werktijd (sec)</label>
+                    <input type="number" value="30" min="1" class="interval-work">
+                </div>
+                <div>
+                    <label style="font-size: 12px; display: block; margin-bottom: 4px;">Rusttijd (sec)</label>
+                    <input type="number" value="10" min="0" class="interval-rest">
+                </div>
+                <button class="btn-small" onclick="removeInterval(this)">×</button>
+            `;
+            intervalList.appendChild(newInterval);
+        }
+
+        function removeInterval(btn) {
+            const intervalList = document.getElementById('intervalList');
+            if (intervalList.children.length > 1) {
+                btn.parentElement.remove();
+            }
+        }
+
+        function parseIntervals() {
+            intervals = [];
+
+            if (currentMode === 'simple') {
+                const workTime = parseInt(document.getElementById('workTime').value);
+                const restTime = parseInt(document.getElementById('restTime').value);
+                intervals.push({
+                    reps: 1,
+                    workTime: workTime,
+                    restTime: restTime
+                });
+            } else {
+                const intervalItems = document.querySelectorAll('.interval-item');
+                intervalItems.forEach(item => {
+                    const reps = parseInt(item.querySelector('.interval-reps').value);
+                    const work = parseInt(item.querySelector('.interval-work').value);
+                    const rest = parseInt(item.querySelector('.interval-rest').value);
+                    intervals.push({ reps, workTime: work, restTime: rest });
+                });
+            }
+        }
+
+        function getCurrentInterval() {
+            if (currentIntervalType < intervals.length) {
+                return intervals[currentIntervalType];
+            }
+            return intervals[0];
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateDisplay() {
+            const timeStr = formatTime(timeRemaining);
+            const roundStr = `Ronde ${currentRound} / ${totalRounds}`;
+
+            let statusStr = 'Klaar om te starten';
+            let statusClass = '';
+
+            if (currentPhase === 'preparation') {
+                statusStr = 'Voorbereiding';
+                statusClass = 'status-preparation';
+            } else if (currentPhase === 'work') {
+                statusStr = 'Werk';
+                statusClass = 'status-work';
+            } else if (currentPhase === 'rest') {
+                statusStr = 'Rust';
+                statusClass = 'status-rest';
+            } else if (currentPhase === 'finished') {
+                statusStr = 'Klaar!';
+                statusClass = 'status-finished';
+            }
+
+            // Update normal display
+            document.getElementById('timerTime').textContent = timeStr;
+            document.getElementById('timerStatus').textContent = statusStr;
+            document.getElementById('timerRounds').textContent = roundStr;
+            document.getElementById('timerDisplay').className = `timer-display ${statusClass}`;
+
+            // Update fullscreen display
+            document.getElementById('fsTimerTime').textContent = timeStr;
+            document.getElementById('fsTimerStatus').textContent = statusStr;
+            document.getElementById('fsTimerRounds').textContent = roundStr;
+
+            // Update button text
+            const startBtnText = isRunning && !isPaused ? 'Pauze' : 'Start';
+            document.getElementById('startBtn').textContent = startBtnText;
+            document.getElementById('fsStartBtn').textContent = startBtnText;
+            document.getElementById('startBtn').className = isRunning && !isPaused ? 'btn btn-pause' : 'btn btn-start';
+            document.getElementById('fsStartBtn').className = isRunning && !isPaused ? 'btn btn-pause' : 'btn btn-start';
+        }
+
+        function nextPhase() {
+            if (currentPhase === 'ready' || currentPhase === 'finished') {
+                // Start first round with preparation
+                currentRound = 1;
+                currentPhase = 'preparation';
+                const prepTime = currentMode === 'simple' ?
+                    parseInt(document.getElementById('prepTime').value) :
+                    parseInt(document.getElementById('advPrepTime').value);
+                timeRemaining = prepTime;
+                currentIntervalType = 0;
+                currentRepInInterval = 0;
+            } else if (currentPhase === 'preparation') {
+                // Go to first work interval
+                currentPhase = 'work';
+                timeRemaining = intervals[0].workTime;
+                currentIntervalType = 0;
+                currentRepInInterval = 0;
+            } else if (currentPhase === 'work') {
+                // After work, check if we have rest time
+                const interval = getCurrentInterval();
+                if (interval.restTime > 0) {
+                    currentPhase = 'rest';
+                    timeRemaining = interval.restTime;
+                } else {
+                    // No rest, advance to next repetition/interval
+                    advanceToNextInterval();
+                }
+            } else if (currentPhase === 'rest') {
+                // After rest, advance to next repetition/interval
+                advanceToNextInterval();
+            }
+        }
+
+        function advanceToNextInterval() {
+            const interval = getCurrentInterval();
+
+            // Move to next repetition
+            currentRepInInterval++;
+
+            // Check if we completed all repetitions of current interval
+            if (currentRepInInterval >= interval.reps) {
+                // Move to next interval type
+                currentRepInInterval = 0;
+                currentIntervalType++;
+
+                // Check if we completed all interval types
+                if (currentIntervalType >= intervals.length) {
+                    // Move to next round
+                    currentIntervalType = 0;
+                    currentRound++;
+
+                    if (currentRound > totalRounds) {
+                        // All rounds complete
+                        currentPhase = 'finished';
+                        timeRemaining = 0;
+                        isRunning = false;
+                        return;
+                    }
+                }
+            }
+
+            // Start next work interval
+            currentPhase = 'work';
+            timeRemaining = getCurrentInterval().workTime;
+        }
+
+        function tick() {
+            if (timeRemaining > 0) {
+                // Play beep for last 3 seconds
+                if (timeRemaining <= 3 && timeRemaining > 0) {
+                    playBeep();
+                    document.getElementById('timerDisplay').classList.add('pulse');
+                    setTimeout(() => {
+                        document.getElementById('timerDisplay').classList.remove('pulse');
+                    }, 500);
+                }
+
+                timeRemaining--;
+                updateDisplay();
+            } else {
+                // Phase complete, move to next
+                nextPhase();
+                updateDisplay();
+
+                if (currentPhase === 'finished') {
+                    stopTimer();
+                }
+            }
+        }
+
+        function startTimer() {
+            initAudio(); // Initialize audio context on user interaction
+
+            if (!isRunning) {
+                // First start
+                parseIntervals();
+                totalRounds = currentMode === 'simple' ?
+                    parseInt(document.getElementById('rounds').value) :
+                    parseInt(document.getElementById('advRounds').value);
+
+                currentPhase = 'ready';
+                nextPhase();
+                isRunning = true;
+                isPaused = false;
+
+                timerInterval = setInterval(tick, 1000);
+                updateDisplay();
+            } else if (isPaused) {
+                // Resume
+                isPaused = false;
+                timerInterval = setInterval(tick, 1000);
+                updateDisplay();
+            } else {
+                // Pause
+                isPaused = true;
+                clearInterval(timerInterval);
+                updateDisplay();
+            }
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            isPaused = false;
+            updateDisplay();
+        }
+
+        function resetTimer() {
+            stopTimer();
+            currentPhase = 'ready';
+            currentRound = 0;
+            totalRounds = 0;
+            timeRemaining = 0;
+            currentIntervalType = 0;
+            currentRepInInterval = 0;
+            updateDisplay();
+        }
+
+        function toggleFullscreen() {
+            isFullscreen = !isFullscreen;
+            const fsMode = document.getElementById('fullscreenMode');
+            const settings = document.getElementById('settings');
+
+            if (isFullscreen) {
+                fsMode.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            } else {
+                fsMode.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                startTimer();
+            } else if (e.code === 'Escape' && isFullscreen) {
+                e.preventDefault();
+                toggleFullscreen();
+            }
+        });
+
+        // Initialize
+        updateDisplay();
+    </script>
+</body>
+</html>

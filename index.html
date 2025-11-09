@@ -389,6 +389,62 @@
             }
         }
 
+        .close-fullscreen {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            font-size: 32px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            transition: all 0.3s;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .close-fullscreen:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .close-fullscreen.active {
+            display: flex;
+        }
+
+        @media (max-width: 768px) {
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+
+            .mode-selector {
+                flex-direction: column;
+            }
+
+            .mode-btn {
+                width: 100%;
+            }
+
+            .add-buttons {
+                flex-direction: column;
+            }
+
+            .btn-add {
+                width: 100%;
+            }
+
+            .loop-item h4 {
+                font-size: 16px;
+            }
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 20px;
@@ -405,6 +461,14 @@
             .btn {
                 padding: 12px 25px;
                 font-size: 16px;
+            }
+
+            .close-fullscreen {
+                width: 40px;
+                height: 40px;
+                font-size: 24px;
+                top: 10px;
+                right: 10px;
             }
         }
     </style>
@@ -512,6 +576,8 @@
             <button class="btn btn-reset" onclick="resetTimer()">Reset</button>
         </div>
     </div>
+
+    <button class="close-fullscreen" id="closeFullscreen" onclick="toggleFullscreen()">×</button>
 
     <script>
         // State
@@ -851,13 +917,16 @@
             isFullscreen = !isFullscreen;
             const fsMode = document.getElementById('fullscreenMode');
             const settings = document.getElementById('settings');
+            const closeBtn = document.getElementById('closeFullscreen');
 
             if (isFullscreen) {
                 document.body.style.overflow = 'hidden';
+                closeBtn.classList.add('active');
                 updateDisplay(); // This will set the correct background color
             } else {
                 fsMode.classList.remove('active');
                 fsMode.className = 'fullscreen-mode'; // Reset classes
+                closeBtn.classList.remove('active');
                 document.body.style.overflow = 'auto';
             }
         }

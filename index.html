@@ -141,10 +141,9 @@
         }
 
         .interval-item-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr auto;
+            display: flex;
+            flex-direction: column;
             gap: 10px;
-            align-items: end;
         }
 
         .interval-item input {
@@ -158,17 +157,6 @@
             width: 100%;
         }
 
-        @media (max-width: 768px) {
-            .interval-item-row {
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-            }
-
-            .interval-item-row > div:last-of-type {
-                grid-column: 1 / -1;
-            }
-        }
-
         .btn-small {
             padding: 10px 16px;
             background: #dc3545;
@@ -178,8 +166,7 @@
             cursor: pointer;
             font-size: 14px;
             transition: background 0.3s;
-            height: fit-content;
-            align-self: end;
+            width: 100%;
         }
 
         .btn-small:hover {
@@ -337,7 +324,7 @@
         }
 
         .fullscreen-mode .timer-time {
-            font-size: 15vw;
+            font-size: 20vw;
             margin-bottom: 40px;
         }
 
@@ -347,12 +334,12 @@
         }
 
         .fullscreen-mode .timer-rounds {
-            font-size: 3vw;
+            font-size: 6vw;
             margin-bottom: 20px;
         }
 
         .fullscreen-mode .timer-description {
-            font-size: 2.5vw;
+            font-size: 6vw;
             margin-bottom: 40px;
         }
 
@@ -523,24 +510,24 @@
                         <h4>Loop Intervallen</h4>
                         <div class="interval-list" id="intervalList">
                             <div class="interval-item">
-                                <div class="interval-desc-wrapper">
-                                    <label style="font-size: 12px; display: block; margin-bottom: 4px;">Beschrijving (optioneel)</label>
-                                    <input type="text" maxlength="40" placeholder="Bijv. Squats" class="interval-desc" style="width: 100%;">
-                                </div>
                                 <div class="interval-item-row">
                                     <div>
+                                        <label style="font-size: 12px; display: block; margin-bottom: 4px;">Beschrijving (optioneel)</label>
+                                        <input type="text" maxlength="40" placeholder="Bijv. Squats" class="interval-desc" style="width: 100%;">
+                                    </div>
+                                    <div>
                                         <label style="font-size: 12px; display: block; margin-bottom: 4px;">Repetities</label>
-                                        <input type="number" value="1" min="1" class="interval-reps">
+                                        <input type="number" value="1" min="1" class="interval-reps" style="width: 100%;">
                                     </div>
                                     <div>
                                         <label style="font-size: 12px; display: block; margin-bottom: 4px;">Werktijd (sec)</label>
-                                        <input type="number" value="45" min="1" class="interval-work">
+                                        <input type="number" value="45" min="1" class="interval-work" style="width: 100%;">
                                     </div>
                                     <div>
                                         <label style="font-size: 12px; display: block; margin-bottom: 4px;">Rusttijd (sec)</label>
-                                        <input type="number" value="15" min="0" class="interval-rest">
+                                        <input type="number" value="15" min="0" class="interval-rest" style="width: 100%;">
                                     </div>
-                                    <button class="btn-small" onclick="removeInterval(this)">×</button>
+                                    <button class="btn-small" onclick="removeInterval(this)">Verwijder</button>
                                 </div>
                             </div>
                         </div>
@@ -642,24 +629,24 @@
             const newInterval = document.createElement('div');
             newInterval.className = 'interval-item';
             newInterval.innerHTML = `
-                <div class="interval-desc-wrapper">
-                    <label style="font-size: 12px; display: block; margin-bottom: 4px;">Beschrijving (optioneel)</label>
-                    <input type="text" maxlength="40" placeholder="Bijv. Squats" class="interval-desc" style="width: 100%;">
-                </div>
                 <div class="interval-item-row">
                     <div>
+                        <label style="font-size: 12px; display: block; margin-bottom: 4px;">Beschrijving (optioneel)</label>
+                        <input type="text" maxlength="40" placeholder="Bijv. Squats" class="interval-desc" style="width: 100%;">
+                    </div>
+                    <div>
                         <label style="font-size: 12px; display: block; margin-bottom: 4px;">Repetities</label>
-                        <input type="number" value="1" min="1" class="interval-reps">
+                        <input type="number" value="1" min="1" class="interval-reps" style="width: 100%;">
                     </div>
                     <div>
                         <label style="font-size: 12px; display: block; margin-bottom: 4px;">Werktijd (sec)</label>
-                        <input type="number" value="30" min="1" class="interval-work">
+                        <input type="number" value="30" min="1" class="interval-work" style="width: 100%;">
                     </div>
                     <div>
                         <label style="font-size: 12px; display: block; margin-bottom: 4px;">Rusttijd (sec)</label>
-                        <input type="number" value="10" min="0" class="interval-rest">
+                        <input type="number" value="10" min="0" class="interval-rest" style="width: 100%;">
                     </div>
-                    <button class="btn-small" onclick="removeInterval(this)">×</button>
+                    <button class="btn-small" onclick="removeInterval(this)">Verwijder</button>
                 </div>
             `;
             intervalList.appendChild(newInterval);
@@ -668,7 +655,7 @@
         function removeInterval(btn) {
             const intervalList = document.getElementById('intervalList');
             if (intervalList.children.length > 1) {
-                btn.parentElement.remove();
+                btn.closest('.interval-item').remove();
             }
         }
 

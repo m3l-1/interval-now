@@ -920,6 +920,7 @@
             const closeBtn = document.getElementById('closeFullscreen');
 
             if (isFullscreen) {
+                fsMode.classList.add('active');
                 document.body.style.overflow = 'hidden';
                 closeBtn.classList.add('active');
                 updateDisplay(); // This will set the correct background color

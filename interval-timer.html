@@ -169,6 +169,37 @@
             }
         }
 
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .timer-time {
+                font-size: 4em;
+            }
+
+            .btn {
+                padding: 12px 25px;
+                font-size: 16px;
+            }
+
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+
+            .interval-item-row {
+                grid-template-columns: 1fr;
+            }
+
+            .interval-item-row button {
+                width: 100%;
+            }
+        }
+
         .btn-small {
             padding: 10px 16px;
             background: #dc3545;
@@ -360,6 +391,47 @@
             margin-top: 40px;
         }
 
+        .fullscreen-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+            transition: all 0.3s;
+            z-index: 10000;
+        }
+
+        .fullscreen-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .fullscreen-close::before,
+        .fullscreen-close::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 3px;
+            background: white;
+        }
+
+        .fullscreen-close::before {
+            transform: rotate(45deg);
+        }
+
+        .fullscreen-close::after {
+            transform: rotate(-45deg);
+        }
+
         .status-preparation {
             background: linear-gradient(135deg, #17a2b8 0%, #138496 100%) !important;
         }
@@ -386,25 +458,6 @@
             }
             50% {
                 transform: scale(1.05);
-            }
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 2em;
-            }
-
-            .timer-time {
-                font-size: 4em;
-            }
-
-            .btn {
-                padding: 12px 25px;
-                font-size: 16px;
             }
         }
     </style>
@@ -503,6 +556,7 @@
     </div>
 
     <div class="fullscreen-mode" id="fullscreenMode">
+        <div class="fullscreen-close" onclick="toggleFullscreen()" title="Fullscreen sluiten (ESC)"></div>
         <div class="timer-time" id="fsTimerTime">00:00</div>
         <div class="timer-status" id="fsTimerStatus">Klaar om te starten</div>
         <div class="timer-rounds" id="fsTimerRounds">Ronde 0 / 0</div>
